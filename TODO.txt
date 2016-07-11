@@ -1,0 +1,6 @@
+* SSL for nginx
+* demo api on SSL
+* react native connected to SSL API
+* JWT token authentication of API services
+* socket.io example with react-native
+* socket.io JWT auth

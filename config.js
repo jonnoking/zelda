@@ -1,6 +1,6 @@
 module.exports = {
     db: {
-        production: 'mongodb://172.17.0.3/penwith',
-        development: 'mongodb://localhost/penwith',
+        production: 'mongodb://zelda-mongo/penwith',
+        development: 'mongodb://zelda-mongo/penwith',
     }
 }

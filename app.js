@@ -8,8 +8,12 @@ var bodyParser = require('body-parser');
 var config = require('./config.js');
 
 var mongoose = require('mongoose');
-mongoose.connect(config.db.production);
 
+if (process.env.NODE_ENV == "development") {
+  mongoose.connect(config.db.development);
+} else {
+  mongoose.connect(config.db.production);
+}
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
