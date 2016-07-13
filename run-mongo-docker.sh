@@ -10,4 +10,4 @@ docker run -d -P --name zelda-mongo library/mongo:latest
 
 sleep 20
 
-docker run -d --link zelda-mongo:zelda-mongo -p 8081:8081 -e "ME_CONFIG_MONGODB_SERVER=zelda-mongo" --name zelda-mongo-express library/mongo-express
+docker run -d --link zelda-mongo:zelda-mongo -p 8087:8081 -e "ME_CONFIG_MONGODB_SERVER=zelda-mongo" --name zelda-mongo-express library/mongo-express
