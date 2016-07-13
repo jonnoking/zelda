@@ -47,8 +47,8 @@ app.use(function(req, res, next) {
     "apps": "SAP,Workday"
   }
   
-  var token = jsonwebtoken.sign(JSON.stringify(x), new Buffer('wB4GaeceofpPRKvxNWD-MXrJKB0gjNpSn9nW6rkOfmm9_-Td5hdSRYitjEamK9Pf', 'base64'));
-  req.headers["Authorization"] = token;
+  //var token = jsonwebtoken.sign(JSON.stringify(x), new Buffer('wB4GaeceofpPRKvxNWD-MXrJKB0gjNpSn9nW6rkOfmm9_-Td5hdSRYitjEamK9Pf', 'base64'));
+  //req.headers["Authorization"] = token;
   next();
 });
 

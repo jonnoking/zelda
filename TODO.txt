@@ -15,3 +15,4 @@
 * write Auth0 rule against API for custom authentication
 * find a reason to use the Auth0 API 
 * .Net Core Web API for Auth0
+* .Net Core docker?
