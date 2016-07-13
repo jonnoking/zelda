@@ -4,10 +4,16 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
 var config = require('./config.js');
-
 var mongoose = require('mongoose');
+
+var jsonwebtoken = require('jsonwebtoken');
+var jwt = require('express-jwt');
+
+var jwtCheck = jwt({
+  secret: new Buffer('wB4GaeceofpPRKvxNWD-MXrJKB0gjNpSn9nW6rkOfmm9_-Td5hdSRYitjEamK9Pf', 'base64'),
+  audience: 'aL8KG9sLSs6dFvCPOoMjpPSew9kwEwEO'
+});
 
 if (process.env.NODE_ENV == "development") {
   mongoose.connect(config.db.development);
@@ -18,6 +24,7 @@ if (process.env.NODE_ENV == "development") {
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var room = require('./routes/room');
+var usertoken = require('./routes/usertoken');
 
 var app = express();
 
@@ -33,9 +40,25 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function(req, res, next) {
+
+  var x = {
+    "role": "admin",
+    "apps": "SAP,Workday"
+  }
+  
+  var token = jsonwebtoken.sign(JSON.stringify(x), new Buffer('wB4GaeceofpPRKvxNWD-MXrJKB0gjNpSn9nW6rkOfmm9_-Td5hdSRYitjEamK9Pf', 'base64'));
+  req.headers["Authorization"] = token;
+  next();
+});
+
 app.use('/', routes);
 app.use('/users', users);
-app.use('/room', room);
+app.use('/api/room', room);
+app.use('/api/usertoken', usertoken);
+
+app.use('/api/room', jwtCheck);
+app.use('/api/usertoken', jwtCheck);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

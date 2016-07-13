@@ -1,12 +1,16 @@
 \ SSL for nginx
 \ demo api on SSL
 \ react native app with Auth0 login via see project
+\ react native app to call http API
+* Auth0 login web app
 * react native connected to SSL API
-* JWT token authentication of API services
+* configure Nginx with domain name and SSL certificate
+\ JWT token authentication of API services
 * socket.io example with react-native
 * socket.io JWT auth
-* debugging against Node docker image - recent session at event
-* publish node api to Azure
+* debugging against Node docker image - https://blog.docker.com/2016/07/live-debugging-docker/
+\ get Node app deployed via Github to Azure
+* publish node api + mongodb to Azure
 * write Auth0 rule for data enrichment in auth pipeline
 * write Auth0 rule against API for custom authentication
 * find a reason to use the Auth0 API 

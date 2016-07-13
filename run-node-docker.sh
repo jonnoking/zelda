@@ -10,5 +10,5 @@ NODE_APP=/Users/jonno/Development/node-dev/zelda
 
 docker stop zelda-dev
 docker rm zelda-dev
-docker run -d -p 3000:3000 --name zelda-dev -e "NODE_EVN=development" -v `pwd`:/zelda --link=zelda-mongo:zelda-mongo library/node:latest /zelda/run-node-setup.sh
+docker run -d -p 3000:3000 -p 5858:5858 --name zelda-dev -e "NODE_EVN=development" -v `pwd`:/zelda --link=zelda-mongo:zelda-mongo library/node:latest /zelda/run-node-setup.sh
  
