@@ -1,13 +1,16 @@
 var express = require('express');
+var passport = require('passport');
 var router = express.Router();
 var https = require('https');
 var request = require('request');
+var jwt = require('express-jwt');
+var config = require('../config.js');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-
     var userobject = {};
-// make http call to tokeninfo service
+    // make http call to auth0 tokeninfo service
+    
     var jwtoken = req.headers["authorization"];
     jwtoken = jwtoken.replace("Bearer ", "");
     var idTokenBody = {
@@ -16,7 +19,7 @@ router.get('/', function(req, res, next) {
 
     // //works
     request.post(
-        'https://jonno.eu.auth0.com/tokeninfo',
+        config.auth0.tenant_url+'/tokeninfo',
         {
             form:{ id_token: jwtoken }
         },

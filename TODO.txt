@@ -16,3 +16,4 @@
 * find a reason to use the Auth0 API 
 * .Net Core Web API for Auth0
 * .Net Core docker?
+* Setup Nginx for JWT - see Auth0 repos

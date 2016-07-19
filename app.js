@@ -6,13 +6,13 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var config = require('./config.js');
 var mongoose = require('mongoose');
-
-var jsonwebtoken = require('jsonwebtoken');
+var request = require('request');
 var jwt = require('express-jwt');
 
+
 var jwtCheck = jwt({
-  secret: new Buffer('wB4GaeceofpPRKvxNWD-MXrJKB0gjNpSn9nW6rkOfmm9_-Td5hdSRYitjEamK9Pf', 'base64'),
-  audience: 'aL8KG9sLSs6dFvCPOoMjpPSew9kwEwEO'
+  secret: new Buffer(config.auth0.secret, 'base64'),
+  audience: config.auth0.audience
 });
 
 if (process.env.NODE_ENV == "development") {
@@ -40,25 +40,47 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(function(req, res, next) {
-
-  var x = {
-    "role": "admin",
-    "apps": "SAP,Workday"
-  }
-  
-  //var token = jsonwebtoken.sign(JSON.stringify(x), new Buffer('wB4GaeceofpPRKvxNWD-MXrJKB0gjNpSn9nW6rkOfmm9_-Td5hdSRYitjEamK9Pf', 'base64'));
-  //req.headers["Authorization"] = token;
-  next();
-});
 
 app.use('/', routes);
 app.use('/users', users);
-app.use('/api/room', room);
-app.use('/api/usertoken', usertoken);
 
 app.use('/api/room', jwtCheck);
+app.use('/api/room', room);
+
 app.use('/api/usertoken', jwtCheck);
+app.use('/api/usertoken', usertoken);
+
+
+app.use('/api/usersecure', jwtCheck);
+
+app.get('/api/usersecure', function(req, res, next){
+      var userobject = {};
+    // make http call to auth0 tokeninfo service
+    
+    var jwtoken = req.headers["authorization"];
+    jwtoken = jwtoken.replace("Bearer ", "");
+    var idTokenBody = {
+        id_token: jwtoken
+    };
+
+    // //works
+    request.post(
+        config.auth0.tenant_url+'/tokeninfo',
+        {
+            form:{ id_token: jwtoken }
+        },
+        function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                userobject = JSON.parse(body);
+                console.log(body);
+                res.json({info: '/usertoken', user: userobject});
+            } else {
+                res.json({info: '/usertoken', error: error});
+            }                        
+            return;
+        }
+    );    
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
