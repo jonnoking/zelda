@@ -8,6 +8,7 @@ var config = require('./config.js');
 var mongoose = require('mongoose');
 var request = require('request');
 var jwt = require('express-jwt');
+var UnauthorizedError = require('./middleware/errors/UnauthorizedError');
 
 
 var jwtCheck = jwt({
@@ -41,14 +42,32 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+function check_scopes(scopes) {
+  return function(req, res, next) {
+    //
+    // check if any of the scopes defined in the token,
+    // is one of the scopes declared on check_scopes
+    //
+    //var token = req.token_payload;
+    for (var i =0; i<req.user.scopes.length; i++){
+      for (var j=0; j<scopes.length; j++){
+          if(scopes[j] === req.user.scopes[i]) return next();
+      }
+    }
+
+    //return res.send(401, {error: 'insufficient scopes'})
+    return next(new UnauthorizedError('insufficient scopes', { message: 'You do not have sufficient permissions to access this service' }));
+
+  }
+}
+
 app.use('/', routes);
 app.use('/users', users);
 
-app.use('/api/room', jwtCheck);
-app.use('/api/room', room);
+app.use('/api/room', jwtCheck, check_scopes(["admin:read"]), room);
 
-app.use('/api/usertoken', jwtCheck);
-app.use('/api/usertoken', usertoken);
+app.use('/api/usertoken', jwtCheck, usertoken);
+//app.use('/api/usertoken', usertoken);
 
 
 app.use('/api/usersecure', jwtCheck);
