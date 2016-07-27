@@ -8,13 +8,22 @@ var config = require('./config.js');
 var mongoose = require('mongoose');
 var request = require('request');
 var jwt = require('express-jwt');
-var UnauthorizedError = require('./middleware/errors/UnauthorizedError');
 
+//// standard client JWT validation
+// var jwtCheck = jwt({
+//   secret: new Buffer(config.auth0.secret, 'base64'),
+//   audience: config.auth0.audience
+// });
 
+// setup for API 
+var rsaValidation = require('auth0-api-jwt-rsa-validation');
 var jwtCheck = jwt({
-  secret: new Buffer(config.auth0.secret, 'base64'),
-  audience: config.auth0.audience
+  secret: rsaValidation(),
+  algorithms: [config.auth0Api.algorithms],
+  issuer: config.auth0Api.issuer,
+  audience: config.auth0Api.audience
 });
+
 
 if (process.env.NODE_ENV == "development") {
   mongoose.connect(config.db.development);
@@ -49,14 +58,22 @@ function check_scopes(scopes) {
     // is one of the scopes declared on check_scopes
     //
     //var token = req.token_payload;
-    for (var i =0; i<req.user.scopes.length; i++){
+
+    var jwtScopes = req.user.scope.split(" ");
+
+    for (var i =0; i<jwtScopes.length; i++){
       for (var j=0; j<scopes.length; j++){
-          if(scopes[j] === req.user.scopes[i]) return next();
+          if(scopes[j] === jwtScopes[i]) return next();
       }
     }
 
     //return res.send(401, {error: 'insufficient scopes'})
-    return next(new UnauthorizedError('insufficient scopes', { message: 'You do not have sufficient permissions to access this service' }));
+      res.status(403);
+      res.set('Content-Type', 'application/json');
+      res.send({
+        message: "You do not have sufficient permissions to access this service",
+        error: "insufficient scopes"
+      });
 
   }
 }
@@ -64,7 +81,7 @@ function check_scopes(scopes) {
 app.use('/', routes);
 app.use('/users', users);
 
-app.use('/api/room', jwtCheck, check_scopes(["admin:read"]), room);
+app.use('/api/room', jwtCheck, check_scopes(["all:users"]), room);
 
 app.use('/api/usertoken', jwtCheck, usertoken);
 //app.use('/api/usertoken', usertoken);
