@@ -8,12 +8,12 @@
 \ JWT token authentication of API services
 * socket.io example with react-native
 * socket.io JWT auth
-* debugging against Node docker image - https://blog.docker.com/2016/07/live-debugging-docker/
+\ debugging against Node docker image - https://blog.docker.com/2016/07/live-debugging-docker/
 \ get Node app deployed via Github to Azure
 * publish node api + mongodb to Azure
-* write Auth0 rule for data enrichment in auth pipeline
-* write Auth0 rule against API for custom authentication
-* find a reason to use the Auth0 API 
-* .Net Core Web API for Auth0
+\ write Auth0 rule for data enrichment in auth pipeline
+\ write Auth0 rule against API for custom authentication
+\ find a reason to use the Auth0 API 
+\ .Net Core Web API for Auth0
 * .Net Core docker?
 * Setup Nginx for JWT - see Auth0 repos

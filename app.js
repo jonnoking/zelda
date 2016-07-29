@@ -53,11 +53,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 function check_scopes(scopes) {
   return function(req, res, next) {
-    //
-    // check if any of the scopes defined in the token,
-    // is one of the scopes declared on check_scopes
-    //
-    //var token = req.token_payload;
 
     var jwtScopes = req.user.scope.split(" ");
 
